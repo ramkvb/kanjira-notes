@@ -1,0 +1,110 @@
+@model KanjiraNotes.Models.Lesson
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="page-header lesson-detail-header">
+    <div class="page-header-content">
+        <div class="breadcrumb">
+            <a asp-action="Index">Lessons</a> <span class="breadcrumb-sep">›</span> @Model.Title
+        </div>
+        <h1>@Model.Title</h1>
+        @if (!string.IsNullOrEmpty(Model.Tala))
+        {
+            <span class="tala-badge tala-badge-lg">@Model.Tala</span>
+        }
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-ghost btn-sm" id="btn-edit-lesson">✏️ Edit</a>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Description))
+{
+    <div class="lesson-description-box collapsible" id="lesson-desc">
+        <button class="collapsible-toggle" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span>Description</span>
+            <span class="toggle-icon">▼</span>
+        </button>
+        <div class="collapsible-content">
+            <p>@Model.Description</p>
+        </div>
+    </div>
+}
+
+<section class="patterns-section">
+    <div class="patterns-header">
+        <h2>Patterns</h2>
+        <button class="btn btn-accent btn-sm" id="btn-add-pattern" onclick="addNewPattern(@Model.Id)">
+            + Add Pattern
+        </button>
+    </div>
+
+    <div class="patterns-list" id="patterns-list">
+        @if (!Model.Patterns.Any())
+        {
+            <div class="empty-state" id="empty-patterns">
+                <div class="empty-icon">🎵</div>
+                <p>No patterns yet. Add one to start creating your drum notation!</p>
+            </div>
+        }
+        @foreach (var pattern in Model.Patterns)
+        {
+            <div class="pattern-block" id="pattern-block-@pattern.Id" data-pattern-id="@pattern.Id">
+                @await Html.PartialAsync("_DrumGrid", pattern)
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/kanjira-sounds.js" asp-append-version="true"></script>
+    <script src="~/js/metronome.js" asp-append-version="true"></script>
+    <script src="~/js/drum-grid.js" asp-append-version="true"></script>
+    <script>
+        const lessonId = @Model.Id;
+
+        async function addNewPattern(lessonId) {
+            try {
+                const resp = await fetch('/api/patterns', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        lessonId: lessonId,
+                        name: null,
+                        bpm: 80,
+                        beatsPerCycle: 4,
+                        notesPerBeat: 4
+                    })
+                });
+                if (!resp.ok) throw new Error('Failed to create pattern');
+                const data = await resp.json();
+                // Reload to show new pattern
+                window.location.reload();
+            } catch (err) {
+                console.error('Error creating pattern:', err);
+                alert('Failed to create pattern. Please try again.');
+            }
+        }
+
+        async function deletePattern(patternId) {
+            if (!confirm('Delete this pattern?')) return;
+            try {
+                const resp = await fetch(`/api/patterns/${patternId}`, { method: 'DELETE' });
+                if (!resp.ok) throw new Error('Failed to delete');
+                document.getElementById(`pattern-block-${patternId}`)?.remove();
+                // Show empty state if no patterns left
+                const list = document.getElementById('patterns-list');
+                if (list && !list.querySelector('.pattern-block')) {
+                    list.innerHTML = `<div class="empty-state" id="empty-patterns">
+                        <div class="empty-icon">🎵</div>
+                        <p>No patterns yet. Add one to start creating your drum notation!</p>
+                    </div>`;
+                }
+            } catch (err) {
+                console.error('Error deleting pattern:', err);
+                alert('Failed to delete pattern.');
+            }
+        }
+    </script>
+}

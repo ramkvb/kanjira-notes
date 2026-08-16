@@ -1,0 +1,30 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.docstates
+*.DotSettings.user
+
+## SQLite database
+*.db
+*.db-shm
+*.db-wal
+
+## IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*~
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Publish
+publish/
+
+## Vendor libraries (restored via libman)
+wwwroot/lib/

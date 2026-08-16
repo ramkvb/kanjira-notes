@@ -1,0 +1,52 @@
+@model KanjiraNotes.Models.Lesson
+@{
+    ViewData["Title"] = "Edit Lesson";
+}
+
+<div class="page-header">
+    <div class="page-header-content">
+        <h1>Edit Lesson</h1>
+        <p class="page-subtitle">Update lesson details</p>
+    </div>
+</div>
+
+<div class="form-container">
+    <form asp-action="Edit" method="post" class="lesson-form" id="edit-lesson-form">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="form-errors"></div>
+
+        <div class="form-group">
+            <label asp-for="Title" class="form-label">Lesson Title *</label>
+            <input asp-for="Title" class="form-input" id="input-title" />
+            <span asp-validation-for="Title" class="form-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Tala" class="form-label">Tala</label>
+            <select asp-for="Tala" class="form-input form-select" id="select-tala">
+                <option value="">Select a Tala (optional)</option>
+                <option value="Adi Tala (8 beats)">Adi Tala (8 beats)</option>
+                <option value="Rupaka Tala (3 beats)">Rupaka Tala (3 beats)</option>
+                <option value="Misra Chapu (7 beats)">Misra Chapu (7 beats)</option>
+                <option value="Khanda Chapu (5 beats)">Khanda Chapu (5 beats)</option>
+                <option value="Tisra Eka (3 beats)">Tisra Eka (3 beats)</option>
+                <option value="Chatusra Eka (4 beats)">Chatusra Eka (4 beats)</option>
+                <option value="Khanda Eka (5 beats)">Khanda Eka (5 beats)</option>
+                <option value="Misra Eka (7 beats)">Misra Eka (7 beats)</option>
+                <option value="Sankirna Eka (9 beats)">Sankirna Eka (9 beats)</option>
+                <option value="Custom">Custom</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description" class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-input form-textarea" id="input-description" rows="4"></textarea>
+            <span asp-validation-for="Description" class="form-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="btn-submit-edit">Save Changes</button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>

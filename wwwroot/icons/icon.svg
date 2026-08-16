@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8a838"/>
+      <stop offset="100%" stop-color="#c47f20"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#1a1a2e"/>
+  <!-- Drum body -->
+  <ellipse cx="256" cy="280" rx="150" ry="40" fill="#2a2a45" stroke="url(#g)" stroke-width="4"/>
+  <rect x="106" y="180" width="300" height="100" fill="#2a2a45"/>
+  <ellipse cx="256" cy="180" rx="150" ry="40" fill="#1e1e35" stroke="url(#g)" stroke-width="4"/>
+  <!-- Drum head -->
+  <ellipse cx="256" cy="180" rx="130" ry="32" fill="url(#g)" opacity="0.2"/>
+  <ellipse cx="256" cy="180" rx="130" ry="32" fill="none" stroke="url(#g)" stroke-width="2.5"/>
+  <!-- Center dot -->
+  <circle cx="256" cy="180" r="8" fill="url(#g)"/>
+  <!-- Sound waves -->
+  <path d="M 256 130 Q 270 120 256 110" fill="none" stroke="url(#g)" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+  <path d="M 256 125 Q 280 110 256 95" fill="none" stroke="url(#g)" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+  <path d="M 256 120 Q 290 100 256 80" fill="none" stroke="url(#g)" stroke-width="3" stroke-linecap="round" opacity="0.2"/>
+  <!-- Text -->
+  <text x="256" y="370" text-anchor="middle" fill="url(#g)" font-family="Inter, sans-serif" font-size="48" font-weight="700">KN</text>
+</svg>
