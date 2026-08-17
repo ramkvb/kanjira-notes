@@ -3,14 +3,12 @@
  * Manages grid rendering, cell toggling, playback cursor, and auto-save.
  */
 
-const STROKES = ['Ta', 'Di', 'Tom', 'Nam', 'Tha', 'Ki'];
+const STROKES = ['Tha', 'Thi', 'Thom', 'Naam'];
 const STROKE_COLORS = {
-    'Ta':  'hsl(38, 90%, 55%)',    // Amber
-    'Di':  'hsl(260, 70%, 60%)',   // Purple
-    'Tom': 'hsl(170, 60%, 45%)',   // Teal
-    'Nam': 'hsl(350, 75%, 55%)',   // Red
-    'Tha': 'hsl(200, 80%, 55%)',   // Blue
-    'Ki':  'hsl(80, 65%, 50%)',    // Lime
+    'Tha':  'hsl(38, 90%, 55%)',    // Amber - Open tone
+    'Thi':  'hsl(200, 80%, 55%)',   // Blue - Finger tip
+    'Thom': 'hsl(260, 70%, 60%)',   // Purple - Bass/muted
+    'Naam': 'hsl(350, 75%, 55%)',   // Red - Slap
 };
 
 class DrumGrid {

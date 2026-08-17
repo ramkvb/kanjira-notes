@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using KanjiraNotes;
 using KanjiraNotes.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,11 +14,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
-// Auto-migrate database on startup
+// Auto-migrate database on startup and seed data
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
+    SeedData.Initialize(db);
 }
 
 // Configure the HTTP request pipeline.
