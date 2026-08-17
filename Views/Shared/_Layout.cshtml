@@ -10,7 +10,8 @@
     <meta name="apple-mobile-web-app-title" content="Kanjira Notes" />
     <title>@ViewData["Title"] - Kanjira Notes</title>
     <link rel="manifest" href="/manifest.json" />
-    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,7 +23,7 @@
         <nav class="main-nav" id="main-nav">
             <div class="nav-container">
                 <a class="nav-brand" asp-controller="Home" asp-action="Index">
-                    <span class="brand-icon">🥁</span>
+                    <img class="brand-icon-img" src="/icons/icon-192.png" alt="Kanjira" />
                     <span class="brand-text">Kanjira Notes</span>
                 </a>
                 <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
