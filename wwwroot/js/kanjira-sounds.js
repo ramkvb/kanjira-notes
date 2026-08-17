@@ -1,5 +1,6 @@
 /**
  * Kanjira Sounds - Real audio sample playback
+ * Supports two sound modes: Instrument (drum) and Voice
  * Uses recorded .wav samples for authentic Kanjira strokes:
  * Tha, Thi, Thom, Naam
  */
@@ -7,9 +8,10 @@ class KanjiraSounds {
     constructor() {
         this.ctx = null;
         this.initialized = false;
-        this.buffers = {};
-        this.loaded = false;
+        this.buffers = { instrument: {}, voice: {} };
+        this.loaded = { instrument: false, voice: false };
         this.loading = false;
+        this.mode = 'instrument'; // 'instrument' or 'voice'
     }
 
     async init() {
@@ -25,35 +27,69 @@ class KanjiraSounds {
         }
     }
 
+    /**
+     * Set the playback mode
+     * @param {'instrument'|'voice'} mode
+     */
+    setMode(mode) {
+        if (mode === 'instrument' || mode === 'voice') {
+            this.mode = mode;
+            console.log('Sound mode:', mode);
+        }
+    }
+
+    getMode() {
+        return this.mode;
+    }
+
     async _loadSamples() {
-        if (this.loaded || this.loading) return;
+        if (this.loading) return;
         this.loading = true;
 
-        const strokes = {
-            'Tha':  '/sounds/tha.wav',
-            'Thi':  '/sounds/thi.wav',
-            'Thom': '/sounds/thom.wav',
-            'Naam': '/sounds/naam.wav'
+        const sampleSets = {
+            instrument: {
+                'Tha':  '/sounds/tha.wav',
+                'Thi':  '/sounds/thi.wav',
+                'Thom': '/sounds/thom.wav',
+                'Naam': '/sounds/naam.wav'
+            },
+            voice: {
+                'Tha':  '/sounds/tha_voice.wav',
+                'Thi':  '/sounds/thi_voice.wav',
+                'Thom': '/sounds/thom_voice.wav',
+                'Naam': '/sounds/naam_voice.wav'
+            }
         };
 
-        const loadPromises = Object.entries(strokes).map(async ([name, url]) => {
-            try {
-                const response = await fetch(url);
-                const arrayBuffer = await response.arrayBuffer();
-                this.buffers[name] = await this.ctx.decodeAudioData(arrayBuffer);
-            } catch (err) {
-                console.warn(`Failed to load sample for ${name}:`, err);
+        const loadPromises = [];
+
+        for (const [setName, strokes] of Object.entries(sampleSets)) {
+            for (const [name, url] of Object.entries(strokes)) {
+                loadPromises.push(
+                    fetch(url)
+                        .then(r => r.arrayBuffer())
+                        .then(buf => this.ctx.decodeAudioData(buf))
+                        .then(decoded => {
+                            this.buffers[setName][name] = decoded;
+                        })
+                        .catch(err => {
+                            console.warn(`Failed to load ${setName}/${name}:`, err);
+                        })
+                );
             }
-        });
+        }
 
         await Promise.all(loadPromises);
-        this.loaded = true;
+        this.loaded.instrument = true;
+        this.loaded.voice = true;
         this.loading = false;
-        console.log('Kanjira samples loaded:', Object.keys(this.buffers).join(', '));
+        console.log('Kanjira samples loaded — instrument:', 
+            Object.keys(this.buffers.instrument).join(', '),
+            '| voice:', Object.keys(this.buffers.voice).join(', '));
     }
 
     /**
-     * Play a stroke at the given time (or immediately if not specified)
+     * Play a stroke at the given time using current mode
      * @param {string} stroke - One of: Tha, Thi, Thom, Naam
      * @param {number} time - AudioContext time to play at (0 = now)
      */
@@ -64,9 +100,8 @@ class KanjiraSounds {
         }
         this.ensureResumed();
 
-        const buffer = this.buffers[stroke];
+        const buffer = this.buffers[this.mode]?.[stroke];
         if (!buffer) {
-            // Fallback: if samples not loaded yet, use synthesis
             this._playSynthFallback(stroke, time);
             return;
         }
@@ -75,7 +110,6 @@ class KanjiraSounds {
         const source = this.ctx.createBufferSource();
         source.buffer = buffer;
 
-        // Gain node for volume control
         const gain = this.ctx.createGain();
         gain.gain.setValueAtTime(1.0, t);
 

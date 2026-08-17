@@ -87,6 +87,21 @@
         <button class="btn btn-ghost btn-sm" id="clear-btn-@Model.Id" aria-label="Clear pattern">
             Clear
         </button>
+
+        <div class="sound-mode-toggle" id="sound-mode-@Model.Id">
+            <span class="sound-mode-label">Sound:</span>
+            <div class="segmented-control">
+                <button class="segment active" data-mode="instrument" id="mode-instrument-@Model.Id">
+                    <span class="segment-icon">🥁</span>
+                    <span class="segment-text">Instrument</span>
+                </button>
+                <button class="segment" data-mode="voice" id="mode-voice-@Model.Id">
+                    <span class="segment-icon">🎤</span>
+                    <span class="segment-text">Voice</span>
+                </button>
+            </div>
+        </div>
+
         <div class="metronome-toggle">
             <label class="toggle-label">
                 <input type="checkbox" id="metronome-toggle-@Model.Id" checked />

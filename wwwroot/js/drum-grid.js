@@ -103,6 +103,23 @@ class DrumGrid {
                 this.metronome.metronomeEnabled = e.target.checked;
             });
         }
+
+        // Sound mode toggle (Instrument / Voice)
+        const soundModeContainer = document.getElementById(`sound-mode-${id}`);
+        if (soundModeContainer) {
+            soundModeContainer.querySelectorAll('.segment').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const mode = btn.dataset.mode;
+                    window.kanjiraSounds.setMode(mode);
+                    // Update active state on all grids' toggles
+                    document.querySelectorAll('.sound-mode-toggle').forEach(container => {
+                        container.querySelectorAll('.segment').forEach(s => {
+                            s.classList.toggle('active', s.dataset.mode === mode);
+                        });
+                    });
+                });
+            });
+        }
     }
 
     _resizeGrid() {

@@ -1125,6 +1125,66 @@ a:hover {
     font-size: 1rem;
 }
 
+/* Sound Mode Toggle (Instrument / Voice) */
+.sound-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sound-mode-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.segmented-control {
+    display: flex;
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    gap: 2px;
+}
+
+.segment {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.segment:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.segment.active {
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: 0 2px 8px rgba(232, 168, 56, 0.3);
+}
+
+.segment-icon {
+    font-size: 0.85rem;
+}
+
+.segment-text {
+    font-size: 0.75rem;
+}
+
 /* Metronome Toggle Switch */
 .metronome-toggle {
     margin-left: auto;
