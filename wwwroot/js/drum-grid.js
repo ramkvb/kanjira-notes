@@ -174,7 +174,7 @@ class DrumGrid {
         });
     }
 
-    _toggleCell(cell) {
+    async _toggleCell(cell) {
         const stroke = cell.dataset.stroke;
         const noteIdx = parseInt(cell.dataset.note);
 
@@ -185,7 +185,7 @@ class DrumGrid {
 
         // Play sound preview on toggle-on
         if (this.gridData[stroke][noteIdx]) {
-            window.kanjiraSounds.init();
+            await window.kanjiraSounds.init();
             window.kanjiraSounds.play(stroke);
         }
 
@@ -200,8 +200,8 @@ class DrumGrid {
         }
     }
 
-    start() {
-        window.kanjiraSounds.init();
+    async start() {
+        await window.kanjiraSounds.init();
         window.kanjiraSounds.ensureResumed();
 
         this.isPlaying = true;

@@ -3,7 +3,7 @@
  * Cache-first for static assets, network-first for API/HTML
  */
 
-const CACHE_NAME = 'kanjira-notes-v1';
+const CACHE_NAME = 'kanjira-notes-v2';
 const STATIC_ASSETS = [
     '/',
     '/css/site.css',
@@ -11,6 +11,11 @@ const STATIC_ASSETS = [
     '/js/metronome.js',
     '/js/drum-grid.js',
     '/icons/icon.svg',
+    '/icons/icon-192.png',
+    '/sounds/tha.wav',
+    '/sounds/thi.wav',
+    '/sounds/thom.wav',
+    '/sounds/naam.wav',
     '/manifest.json'
 ];
 
