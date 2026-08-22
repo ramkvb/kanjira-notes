@@ -923,8 +923,38 @@ a:hover {
     font-size: 0.9rem;
     font-weight: 700;
     color: var(--accent);
-    min-width: 30px;
-    text-align: right;
+    min-width: 36px;
+    text-align: center;
+}
+
+.bpm-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--accent);
+    font-family: var(--font-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.bpm-btn:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.bpm-btn:active {
+    transform: scale(0.92);
 }
 
 .control-select {

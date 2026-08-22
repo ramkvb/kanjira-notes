@@ -4,15 +4,15 @@
  */
 class Metronome {
     constructor() {
-        this.bpm = 80;
+        this._bpm = 80;
         this.beatsPerCycle = 4;
         this.notesPerBeat = 4;
         this.isPlaying = false;
         this.metronomeEnabled = true;
 
-        // Lookahead scheduling
-        this.scheduleAheadTime = 0.1;  // seconds to schedule ahead
-        this.lookAhead = 25;           // ms between scheduler calls
+        // Lookahead scheduling — tighter for better sync
+        this.scheduleAheadTime = 0.1;  // seconds to look ahead
+        this.lookAhead = 15;           // ms between scheduler calls (tighter)
 
         this.currentNote = 0;
         this.nextNoteTime = 0;
@@ -23,23 +23,32 @@ class Metronome {
         this.onBeat = null;    // (beatIndex, time) => void
     }
 
+    get bpm() { return this._bpm; }
+    set bpm(val) {
+        this._bpm = Math.max(30, Math.min(300, val));
+    }
+
     get totalNotes() {
         return this.beatsPerCycle * this.notesPerBeat;
     }
 
     get secondsPerNote() {
-        return 60.0 / this.bpm / this.notesPerBeat;
+        // BPM is beats per minute. Each beat has notesPerBeat subdivisions.
+        // secondsPerBeat = 60 / BPM
+        // secondsPerNote = secondsPerBeat / notesPerBeat
+        return 60.0 / this._bpm / this.notesPerBeat;
     }
 
-    start() {
+    async start() {
         if (this.isPlaying) return;
 
         const sounds = window.kanjiraSounds;
-        sounds.init();
+        await sounds.init();
         sounds.ensureResumed();
 
         this.isPlaying = true;
         this.currentNote = 0;
+        // Small initial delay to allow audio context to stabilize
         this.nextNoteTime = sounds.currentTime + 0.05;
 
         this._schedule();
@@ -51,14 +60,16 @@ class Metronome {
             clearTimeout(this.timerID);
             this.timerID = null;
         }
+        this.currentNote = 0;
     }
 
     _schedule() {
         if (!this.isPlaying) return;
 
         const sounds = window.kanjiraSounds;
+        const ct = sounds.currentTime;
 
-        while (this.nextNoteTime < sounds.currentTime + this.scheduleAheadTime) {
+        while (this.nextNoteTime < ct + this.scheduleAheadTime) {
             this._scheduleNote(this.currentNote, this.nextNoteTime);
             this._advanceNote();
         }
@@ -67,37 +78,40 @@ class Metronome {
     }
 
     _scheduleNote(noteIndex, time) {
-        const beatIndex = Math.floor(noteIndex / this.notesPerBeat);
         const isFirstOfBeat = (noteIndex % this.notesPerBeat) === 0;
         const isFirstOfCycle = noteIndex === 0;
 
-        // Play metronome click on beats
+        // Play metronome click on beat boundaries
         if (this.metronomeEnabled && isFirstOfBeat) {
             window.kanjiraSounds.playClick(time, isFirstOfCycle);
         }
 
-        // Fire callbacks
+        // Schedule visual and stroke callbacks
+        // Use the Web Audio clock to compute when to fire the visual update
+        const now = window.kanjiraSounds.currentTime;
+        const delayMs = Math.max(0, (time - now) * 1000);
+
+        // Fire onNote callback — synced to audio time
         if (this.onNote) {
-            // Use setTimeout to sync visual updates with audio
-            const delay = Math.max(0, (time - window.kanjiraSounds.currentTime) * 1000);
             setTimeout(() => {
                 if (this.isPlaying) {
                     this.onNote(noteIndex, time);
                 }
-            }, delay);
+            }, delayMs);
         }
 
         if (this.onBeat && isFirstOfBeat) {
-            const delay = Math.max(0, (time - window.kanjiraSounds.currentTime) * 1000);
+            const beatIndex = Math.floor(noteIndex / this.notesPerBeat);
             setTimeout(() => {
                 if (this.isPlaying) {
                     this.onBeat(beatIndex, time);
                 }
-            }, delay);
+            }, delayMs);
         }
     }
 
     _advanceNote() {
+        // Use current secondsPerNote so BPM changes take effect immediately
         this.nextNoteTime += this.secondsPerNote;
         this.currentNote = (this.currentNote + 1) % this.totalNotes;
     }

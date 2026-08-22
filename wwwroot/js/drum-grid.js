@@ -56,10 +56,18 @@ class DrumGrid {
         const bpmSlider = document.getElementById(`bpm-slider-${id}`);
         if (bpmSlider) {
             bpmSlider.addEventListener('input', (e) => {
-                this.bpm = parseInt(e.target.value);
-                this.metronome.bpm = this.bpm;
-                this._debounceSave();
+                this._setBpm(parseInt(e.target.value));
             });
+        }
+
+        // BPM +/- buttons
+        const bpmMinus = document.getElementById(`bpm-minus-${id}`);
+        const bpmPlus = document.getElementById(`bpm-plus-${id}`);
+        if (bpmMinus) {
+            bpmMinus.addEventListener('click', () => this._setBpm(this.bpm - 5));
+        }
+        if (bpmPlus) {
+            bpmPlus.addEventListener('click', () => this._setBpm(this.bpm + 5));
         }
 
         // Beats per cycle
@@ -120,6 +128,22 @@ class DrumGrid {
                 });
             });
         }
+    }
+
+    _setBpm(newBpm) {
+        const id = this.patternId;
+        this.bpm = Math.max(30, Math.min(300, newBpm));
+        this.metronome.bpm = this.bpm;
+
+        // Sync slider position
+        const slider = document.getElementById(`bpm-slider-${id}`);
+        if (slider) slider.value = this.bpm;
+
+        // Sync display
+        const display = document.getElementById(`bpm-val-${id}`);
+        if (display) display.textContent = this.bpm;
+
+        this._debounceSave();
     }
 
     _resizeGrid() {

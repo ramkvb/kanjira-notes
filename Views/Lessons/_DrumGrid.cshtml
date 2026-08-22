@@ -19,10 +19,11 @@
             <div class="control-group">
                 <label class="control-label" for="bpm-@Model.Id">BPM</label>
                 <div class="bpm-control">
+                    <button class="bpm-btn" id="bpm-minus-@Model.Id" aria-label="Decrease BPM by 5" title="-5 BPM">−5</button>
                     <input type="range" id="bpm-slider-@Model.Id" class="bpm-slider"
-                           min="30" max="300" value="@Model.BPM"
-                           oninput="document.getElementById('bpm-val-@Model.Id').textContent = this.value" />
+                           min="30" max="300" step="1" value="@Model.BPM" />
                     <span class="bpm-value" id="bpm-val-@Model.Id">@Model.BPM</span>
+                    <button class="bpm-btn" id="bpm-plus-@Model.Id" aria-label="Increase BPM by 5" title="+5 BPM">+5</button>
                 </div>
             </div>
 
